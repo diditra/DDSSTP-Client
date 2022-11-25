@@ -8,7 +8,7 @@ internal fun getBooleanPrefValue(key: OscPreference, prefs: SharedPreferences): 
     val defaultValue = when (key) {
         OscPreference.ROOT_STATE -> false
         OscPreference.HOME_CONNECTOR -> false
-        OscPreference.SSL_DO_VERIFY -> true
+        OscPreference.SSL_DO_VERIFY -> false
         OscPreference.SSL_DO_ADD_CERT -> false
         OscPreference.SSL_DO_SELECT_SUITES -> false
         OscPreference.PROXY_DO_USE_PROXY -> false
@@ -22,7 +22,7 @@ internal fun getBooleanPrefValue(key: OscPreference, prefs: SharedPreferences): 
         OscPreference.ROUTE_DO_ROUTE_PRIVATE_ADDRESSES -> false
         OscPreference.ROUTE_DO_ADD_CUSTOM_ROUTES -> false
         OscPreference.ROUTE_DO_ENABLE_APP_BASED_RULE -> false
-        OscPreference.RECONNECTION_ENABLED -> false
+        OscPreference.RECONNECTION_ENABLED -> true
         OscPreference.LOG_DO_SAVE_LOG -> false
         else -> throw NotImplementedError()
     }

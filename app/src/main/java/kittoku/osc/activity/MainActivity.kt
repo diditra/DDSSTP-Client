@@ -46,5 +46,6 @@ class MainActivity : AppCompatActivity() {
                 else -> throw NotImplementedError()
             }
         }.attach()
+
     }
 }

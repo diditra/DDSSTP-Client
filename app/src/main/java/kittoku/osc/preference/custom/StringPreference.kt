@@ -16,7 +16,7 @@ internal abstract class StringPreference(context: Context, attrs: AttributeSet) 
     protected open val textType = InputType.TYPE_CLASS_TEXT
     protected open val dependingPreference: OscPreference? = null
     protected open val provider = SummaryProvider<Preference> {
-        getStringPrefValue(oscPreference, it.sharedPreferences!!).ifEmpty { "[No Value Entered]" }
+        getStringPrefValue(oscPreference, it.sharedPreferences!!).ifEmpty {"[No Value Entered]"}
     }
 
     override fun onAttached() {
@@ -37,8 +37,14 @@ internal abstract class StringPreference(context: Context, attrs: AttributeSet) 
 }
 
 internal class HomeHostnamePreference(context: Context, attrs: AttributeSet) : StringPreference(context, attrs) {
+    override val textType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
     override val oscPreference = OscPreference.HOME_HOSTNAME
-    override val preferenceTitle = "Hostname"
+    override val preferenceTitle = "Server Name"
+    override val provider = SummaryProvider<Preference> {
+        if (getStringPrefValue(oscPreference, it.sharedPreferences!!).isEmpty())
+            "[No Value Entered]"
+        else "DD Server " + getStringPrefValue(oscPreference, it.sharedPreferences!!).toString().split(".").last()
+    }
 }
 
 internal class HomeUsernamePreference(context: Context, attrs: AttributeSet) : StringPreference(context, attrs) {
