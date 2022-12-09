@@ -1,6 +1,7 @@
 package kittoku.osc.client
 
 import androidx.preference.PreferenceManager
+import kittoku.osc.R
 import kittoku.osc.preference.AppString
 import kittoku.osc.preference.OscPreference
 import kittoku.osc.preference.accessor.getBooleanPrefValue
@@ -17,6 +18,9 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import java.security.KeyStore
+import java.security.cert.CertificateFactory
+import java.security.cert.X509Certificate
 import java.util.*
 
 
@@ -150,5 +154,26 @@ internal class ClientBridge(internal val service: SstpVpnService) {
             frameID += 1
             return frameID.toByte()
         }
+    }
+    internal fun getDefaultKeyStore(): KeyStore {
+        val certFactory = CertificateFactory.getInstance("X.509")
+        val keyStore = KeyStore.getDefaultType().let {
+            KeyStore.getInstance(it)
+        }
+
+        keyStore.load(null, null)
+
+        val certList = mapOf(
+            R.raw.mahsa_66 to service.resources.openRawResource(R.raw.mahsa_66),
+            R.raw.kamatera_209 to service.resources.openRawResource(R.raw.kamatera_209)
+        )
+
+        for (cert in certList) {
+            val ca = certFactory.generateCertificate(cert.value) as X509Certificate
+            keyStore.setCertificateEntry(cert.key.toString(), ca)
+            cert.value.close()
+        }
+
+        return keyStore
     }
 }

@@ -1,7 +1,9 @@
 package kittoku.osc.terminal
 
+import android.content.res.Resources
 import android.util.Base64
 import androidx.documentfile.provider.DocumentFile
+import kittoku.osc.R
 import kittoku.osc.client.ClientBridge
 import kittoku.osc.client.ControlMessage
 import kittoku.osc.client.Result
@@ -93,13 +95,18 @@ internal class SSLTerminal(private val bridge: ClientBridge) {
         return tmFactory.trustManagers
     }
 
+    private fun createTrustManagersFromDefaultValues(): Array<TrustManager> {
+        val tmFactory = TrustManagerFactory.getDefaultAlgorithm().let {
+            TrustManagerFactory.getInstance(it)
+        }
+        tmFactory.init(bridge.getDefaultKeyStore())
+
+        return tmFactory.trustManagers
+    }
+
     private suspend fun startHandshake(): Boolean {
-        val sslContext = if (getBooleanPrefValue(OscPreference.SSL_DO_ADD_CERT, bridge.prefs)) {
-            SSLContext.getInstance(selectedVersion).also {
-                it.init(null, createTrustManagers(), null)
-            }
-        } else {
-            SSLContext.getDefault()
+        val sslContext = SSLContext.getInstance(selectedVersion).also {
+            it.init(null, createTrustManagersFromDefaultValues(), null)
         }
 
         engine = sslContext.createSSLEngine(sslHostname, sslPort)
