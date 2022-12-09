@@ -1,6 +1,7 @@
 package kittoku.osc.preference.custom
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.text.InputType
 import android.util.AttributeSet
 import androidx.preference.EditTextPreference
@@ -18,7 +19,12 @@ internal abstract class StringPreference(context: Context, attrs: AttributeSet) 
     protected open val provider = SummaryProvider<Preference> {
         getStringPrefValue(oscPreference, it.sharedPreferences!!).ifEmpty {"[No Value Entered]"}
     }
-
+    protected open val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == oscPreference.name) {
+            text = getStringPrefValue(oscPreference, sharedPreferences!!)
+            //summaryProvider = provider
+        }
+    }
     override fun onAttached() {
         super.onAttached()
 
@@ -33,6 +39,7 @@ internal abstract class StringPreference(context: Context, attrs: AttributeSet) 
         text = getStringPrefValue(oscPreference, sharedPreferences!!)
         title = preferenceTitle
         summaryProvider = provider
+        sharedPreferences!!.registerOnSharedPreferenceChangeListener(listener)
     }
 }
 

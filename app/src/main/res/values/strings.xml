@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">DDSSTP Client</string>
+
+    <string name="error_incorrect_protocol">Incorrect protocol</string>
+    <string name="error_corrupted_uri">Corrupted URI</string>
+    <string name="error_incorrect_device">Incorrect device</string>
+    <string name="error_internal_error">Internal error</string>
+    <string name="toast_import_successful">Successful!</string>
+
 </resources>
